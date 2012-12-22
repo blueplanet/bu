@@ -27,7 +27,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new(params[:group])
-    @group.owner = @user #TODO: super classのインスタンンス変数を参照しない
+    @group.owner = current_user
 
     if @group.save
       redirect_to group_url(@group), notice: 'Group was successfully created.'

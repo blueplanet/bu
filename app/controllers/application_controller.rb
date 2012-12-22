@@ -23,23 +23,23 @@ class ApplicationController < ActionController::Base
   def only_group_owner(group = nil)
     login_required
     group ||= Group.find(params[:id])
-    group.owner?(@user) or raise(Group::NotGroupOwner)
+    group.owner?(current_user) or raise(Group::NotGroupOwner)
   end
 
   def only_group_manager(group = nil)
     login_required
     group ||= Group.find(params[:id])
-    group.manager?(@user) or raise(Group::NotGroupManager)
+    group.manager?(current_user) or raise(Group::NotGroupManager)
   end
 
   def only_group_member(group = nil)
     login_required
     group ||= Group.find(params[:id])
-    group.member?(@user) or raise(Group::NotGroupMember)
+    group.member?(current_user) or raise(Group::NotGroupMember)
   end
 
   def only_event_manager(event)
     login_required
-    event.manager?(@user) or raise(Event::NotEventManager)
+    event.manager?(current_user) or raise(Event::NotEventManager)
   end
 end

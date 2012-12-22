@@ -7,7 +7,7 @@ module Members
   def leave
     @group = Group.find(params[:id])
     only_group_member(@group)
-    @group.users.delete(@user)
+    @group.users.delete(current_user)
     redirect_to @group, notice: 'Left.'
   end
 
@@ -15,10 +15,10 @@ module Members
     login_required
     @group = Group.find(params[:id])
     if @group.public?
-      if @group.member?(@user)
+      if @group.member?(current_user)
         redirect_to @group, notice: 'You already are a member of this group.'
       else
-        @group.users << @user
+        @group.users << current_user
         redirect_to @group, notice: 'Joined.'
       end
     else
@@ -30,12 +30,12 @@ module Members
     login_required
     @group = Group.find(params[:id])
     unless @group.public?
-      if @group.member?(@user)
+      if @group.member?(current_user)
         redirect_to @group, notice: 'You already are a member of this group.'
-      elsif @group.requesting_user?(@user)
+      elsif @group.requesting_user?(current_user)
         redirect_to @group, notice: 'You already requested to join this group.'
       else
-        @group.requesting_users << @user
+        @group.requesting_users << current_user
         redirect_to @group, notice: 'Requested.'
       end
     else
@@ -46,8 +46,8 @@ module Members
   def delete_request
     login_required
     @group = Group.find(params[:id])
-    if @group.requesting_user?(@user)
-      @group.requesting_users.delete @user
+    if @group.requesting_user?(current_user)
+      @group.requesting_users.delete current_user
       redirect_to @group, notice: 'Deleted request.'
     else
       redirect_to @group, notice: 'Not deleted request.'
