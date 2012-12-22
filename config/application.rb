@@ -22,6 +22,7 @@ module Bu
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(
       #{config.root}/app/controllers/groups
+      #{config.root}/app/controllers/application
     )
 
     # Only load the plugins named here, in the order given (default is alphabetical).

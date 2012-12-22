@@ -8,9 +8,10 @@ class ApplicationController < ActionController::Base
   rescue_from Group::NotGroupMember, :with => -> { render :text => 'not group member' }
   rescue_from Event::NotEventManager, :with => -> { render :text => 'not event manager' }
 
+  include Authentication
+
   private
 
-  before_filter :user
   before_filter { @subtitle = ': beta' }
 
   before_filter {
@@ -18,21 +19,6 @@ class ApplicationController < ActionController::Base
       session.delete(:redirect_path_after_event_show)
     end
   }
-
-  def user
-    @user ||= User.find(session[:user_id]) if session[:user_id]
-  rescue ActiveRecord::RecordNotFound
-    session[:user_id] = nil
-  end
-
-  def login_required
-    if session[:user_id]
-      @user ||= User.find(session[:user_id])
-    else
-      session[:redirect_path] = request.path
-      raise(User::UnAuthorized)
-    end
-  end
 
   def only_group_owner(group = nil)
     login_required
